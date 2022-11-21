@@ -1,0 +1,48 @@
+version: '3.7'
+services:
+  pgadmin:
+    image: dpage/pgadmin4:6.15
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@dspace.pl
+      - PGADMIN_DEFAULT_PASSWORD=vP3Se4210TqpQ2VveYGd7JrR
+      - PGADMIN_CONFIG_CONSOLE_LOG_LEVEL=10
+      - PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION=True
+      - PGADMIN_DISABLE_POSTFIX=True
+    volumes:
+      - pgadmin.apz.dspace.pl_data:/var/lib/pgadmin
+      - pgadmin.apz.dspace.pl_config:/pgadmin4
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "0.15"
+          memory: "1g"
+    networks:
+      - pgadmin_network
+    ports:
+      - "9001:80"
+    extra_hosts:
+      - "postgresql:10.16.86.30"
+
+networks:
+  pgadmin_network:
+    driver: overlay
+    attachable: true
+
+volumes:
+  pgadmin.apz.dspace.pl_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /storage/swarm-storage/pgadmin.apz.dspace.pl_data
+  pgadmin.apz.dspace.pl_config:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /storage/swarm-storage/pgadmin.apz.dspace.pl_config
