@@ -3,11 +3,13 @@ services:
   pgadmin:
     image: dpage/pgadmin4:6.15
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@dspace.pl
-      - PGADMIN_DEFAULT_PASSWORD=vP3Se4210TqpQ2VveYGd7JrR
-      - PGADMIN_CONFIG_CONSOLE_LOG_LEVEL=10
-      - PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION=True
-      - PGADMIN_DISABLE_POSTFIX=True
+      - PGADMIN_DEFAULT_EMAIL: admin@dspace.pl
+      - PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/pgadmin_password
+      - PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 10
+      - PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: True
+      - PGADMIN_DISABLE_POSTFIX: True
+    secrets:
+      - pgadmin_password
     volumes:
       - pgadmin.apz.dspace.pl_data:/var/lib/pgadmin
       - pgadmin.apz.dspace.pl_config:/pgadmin4
@@ -27,6 +29,9 @@ services:
       - "9001:80"
     extra_hosts:
       - "postgresql:10.16.86.30"
+secrets:
+   pgadmin_password:
+     file: pg_pass.txt
 
 networks:
   pgadmin_network:
